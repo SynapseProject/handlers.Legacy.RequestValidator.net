@@ -48,7 +48,7 @@ namespace Synapse.Handlers.Legacy.RequestValidator
 		/// <summary>
 		/// Executes the main workflow of: Backup, UpdateConfigValues, CopyContent, MoveToNext.
 		/// </summary>
-		public void ExecuteAction(bool isDryRun)
+		public void ExecuteAction(HandlerStartInfo startInfo)
 		{
 			string context = "ExecuteAction";
 
@@ -58,6 +58,8 @@ namespace Synapse.Handlers.Legacy.RequestValidator
 			{
 				return;
 			}
+
+            OnStepProgress(context, Utils.CompressXml(startInfo.Parameters));
 
             Stopwatch clock = new Stopwatch();
             clock.Start();
@@ -70,7 +72,7 @@ namespace Synapse.Handlers.Legacy.RequestValidator
                 if (ok)
                 {
                     ok = ValidateRequest();
-                    if (isDryRun)
+                    if (startInfo.IsDryRun)
                     {
                         OnStepProgress("ExecuteAction", "IsDryRun Flag is set.  Request is presumed to be valid.");
                         ok = true;

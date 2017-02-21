@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace Synapse.Handlers.Legacy.RequestValidator
 {
@@ -36,9 +37,16 @@ namespace Synapse.Handlers.Legacy.RequestValidator
 
 			return string.Format( "Version: {0}, Build DateTime: {1}", version, buildDateTime );
 		}
-	}
 
-	public class EventArgs<T> : EventArgs
+        public static string CompressXml(string xml)
+        {
+            string str = Regex.Replace(xml, @"(>\s*<)", @"><");
+            return str;
+        }
+
+    }
+
+    public class EventArgs<T> : EventArgs
 	{
 		public EventArgs() : base() { }
 		public EventArgs(T data)
