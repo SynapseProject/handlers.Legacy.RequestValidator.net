@@ -37,7 +37,7 @@ namespace Synapse.Handlers.Legacy.RequestValidator
 			_wfp.PackageAdapterInstance = startInfo.InstanceId + "";
 
             // TODO : Replace With Synapse Enterprise Client When Available
-			_apiClient = new SynapseEnterpriseApiClient( s.SentosaCommandCenterApi, WebMessageFormatType.Json );
+			_apiClient = new SynapseEnterpriseApiClient(WebMessageFormatType.Json );
 		}
 
 		/// <summary>
@@ -53,7 +53,7 @@ namespace Synapse.Handlers.Legacy.RequestValidator
 			string context = "ExecuteAction";
 
 			string msg = Utils.GetHeaderMessage(
-				string.Format( "Sentosa CommandCenter, RequestValidator Adapter. {0}, Entering Main Workflow.", Utils.GetBuildDateVersion() ) );
+				string.Format( "Synapse, Legacy RequestValidator Adapter. {0}, Entering Main Workflow.", Utils.GetBuildDateVersion() ) );
 			if( OnStepStarting( context, msg ) )
 			{
 				return;
