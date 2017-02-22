@@ -10,6 +10,8 @@ namespace Synapse.Handlers.Legacy.RequestValidator
 	public class Workflow
 	{
 		WorkflowParameters _wfp = null;
+        HandlerStartInfo _startInfo = null;
+
 		bool _globalCancel = false;
         //TODO : Replace With Synapse Enterprise Client When Available
 		SynapseEnterpriseApiClient _apiClient = null;
@@ -35,6 +37,7 @@ namespace Synapse.Handlers.Legacy.RequestValidator
 		{
 			_wfp.RequestNumber = startInfo.RequestNumber;
 			_wfp.PackageAdapterInstance = startInfo.InstanceId + "";
+            _startInfo = startInfo;
 
             // TODO : Replace With Synapse Enterprise Client When Available
 			_apiClient = new SynapseEnterpriseApiClient(WebMessageFormatType.Json );
@@ -87,7 +90,7 @@ namespace Synapse.Handlers.Legacy.RequestValidator
             ok = ok && ex == null;
             msg = Utils.GetHeaderMessage(string.Format("End Main Workflow: {0}, Total Execution Time: {1}",
                 ok ? "Complete." : "One or more steps failed.", clock.ElapsedSeconds()));
-            OnProgress(context, msg, ok ? StatusType.Complete : StatusType.Failed, 0, int.MaxValue, false, ex);
+            OnProgress(context, msg, ok ? StatusType.Complete : StatusType.Failed, _startInfo.InstanceId, int.MaxValue, false, ex);
 
         }
 
@@ -253,7 +256,7 @@ namespace Synapse.Handlers.Legacy.RequestValidator
 		/// <returns>AdapterProgressCancelEventArgs.Cancel value.</returns>
 		bool OnStepStarting(string context, string message)
 		{
-            OnProgress(context, message, StatusType.Running, 0, _cheapSequence++, false, null);
+            OnProgress(context, message, StatusType.Running, _startInfo.InstanceId, _cheapSequence++, false, null);
             return false;
 		}
 
@@ -265,7 +268,7 @@ namespace Synapse.Handlers.Legacy.RequestValidator
 		/// <param name="message">Descriptive message.</param>
 		void OnStepProgress(string context, string message, Exception ex = null)
 		{
-            OnProgress(context, message, StatusType.Running, 0, _cheapSequence++, false, ex);
+            OnProgress(context, message, StatusType.Running, _startInfo.InstanceId, _cheapSequence++, false, ex);
 		}
 
 		/// <summary>
@@ -276,7 +279,7 @@ namespace Synapse.Handlers.Legacy.RequestValidator
 		/// <param name="message">Descriptive message.</param>
 		void OnStepFinished(string context, string message)
 		{
-            OnProgress(context, message, StatusType.Running, 0, _cheapSequence++, false, null);
+            OnProgress(context, message, StatusType.Running, _startInfo.InstanceId, _cheapSequence++, false, null);
 		}
 		#endregion
 	}
